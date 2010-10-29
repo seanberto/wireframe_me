@@ -1,0 +1,28 @@
+<? // By Sean Larkin at ThinkShout.com
+
+// Parse wireframe inc files.
+require_once('wireframe_me.inc');
+
+/**
+ * Implementation of Hook_menu().
+ */
+function wireframe_me_menu() {
+  $wireframes = wireframe_me_load_wireframes();
+  foreach ($wireframes as $wireframe) {
+    $items[$wireframe['path']] = array(
+      'title' => $wireframe['title'],
+      'page callback' => 'wireframe_me_content',
+      'page arguments' => array($wireframe['content']),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK
+    );
+  }
+  
+  return $items;
+}
+
+function wireframe_me_content($content) {
+  dpm($content);
+  //drupal_set_title($title);
+  return $content;
+}

@@ -1,0 +1,5 @@
+; $Id:
+name = Wireframe me
+description = A developer tool for quickly fleshing out wireframed Drupal sites.
+files[]=wireframe_me.module
+core = 7.x
