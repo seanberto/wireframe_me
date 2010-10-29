@@ -4,25 +4,57 @@
 require_once('wireframe_me.inc');
 
 /**
+ * Implementation of Hook_init().
+ * Check to see if there have been edits to the wireframes config file.
+ * If so, flush the menu cache to pickup changes. (Note, only works for logged-in page loads.)
+ */
+function wireframe_me_init() {
+  $wireframes_file = drupal_get_path('module', 'wireframe_me') . '/wireframes/wireframe_me.wireframes.inc';
+  $last_stamp = variable_get('wireframe_me_timestamp', '');
+  $current_stamp = filemtime($wireframes_file);
+  if (!($last_stamp == $current_stamp)) { // Flush menu cache if changes are picked up.
+   variable_set('wireframe_me_timestamp', $current_stamp);
+   menu_rebuild();
+  }
+}
+
+/**
+ * Implementation of Hook_module_implements_alter(&$implementations, $hook).
+ * Leveraged to make sure that our wireframed paths lose to real paths.
+ */
+function wireframe_me_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'menu') {
+    $group = $implementations['wireframe_me']; // Find our implementations w/in the implementations array.
+    unset($implementations['wireframe_me']); // Unset our implementations.
+    //Add our implementations back at the top of the stack so that we "lose" to other modules competing for a path.
+    $implementations = array('wireframe_me' => $group) + $implementations;
+  }
+}
+
+/**
  * Implementation of Hook_menu().
+ * @FIXME - Not sure why we can't set the 'title' => $wireframe['title].
  */
 function wireframe_me_menu() {
-  $wireframes = wireframe_me_load_wireframes();
-  foreach ($wireframes as $wireframe) {
-    $items[$wireframe['path']] = array(
-      'title' => $wireframe['title'],
-      'page callback' => 'wireframe_me_content',
-      'page arguments' => array($wireframe['content']),
-      'access callback' => TRUE,
-      'type' => MENU_CALLBACK
-    );
+  $wireframes = wireframe_me_load_wireframes(); // Grab and parse our wireframes into an array.
+  if ($wireframes) { // If an array is returned, create menus. @TODO - Alert logged-in user of failures.
+    foreach ($wireframes as $path => $wireframe) {
+      $items[$path] = array(
+        'title' => 'A wireframe',
+        'page callback' => 'wireframe_me_content',
+        'page arguments' => array($wireframe['title'], $wireframe['content']),
+        'access callback' => TRUE,
+        'type' => MENU_CALLBACK
+      );
+    }
   }
-  
   return $items;
 }
 
-function wireframe_me_content($content) {
-  dpm($content);
-  //drupal_set_title($title);
+/**
+ * Helper function for setting page body and title of stubbed out wireframes.
+ */
+function wireframe_me_content($title, $content) {
+  drupal_set_title(check_plain($title));
   return $content;
 }

@@ -1,14 +1,16 @@
 <?php
 
+// Wireframe_me.inc Parser - based upon Profiler2 module.
+
 /**
- * Load the Wireframe Me "wireframes.inc" file.
+ * Load the Wireframe Me "./wireframes/wireframes.inc" file.
+ * Returns an array ($config) if True, otherwise returns False.
  */
 function wireframe_me_load_wireframes() {
   // Grab wireframe config file. @TODO - support multiple files for mixing and matching.
   $file = drupal_get_path('module', 'wireframe_me') . '/wireframes/wireframe_me.wireframes.inc';
   $data = is_file($file) ? file_get_contents($file) : '';
   if ($config = wireframe_me_parse_wireframes($data)) {
-    dpm($config);
     return $config;
   } else {
     return FALSE;

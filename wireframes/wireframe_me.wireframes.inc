@@ -1,8 +1,12 @@
 ; Add wireframe pages here using the following format:
-; wireframe[name][path] = path/to/page
-; wireframe[name][title] = Plain text
-; wireframe[name][content] = Whatever text, setting filter below.
+; path/to/create[title] = Plain text page title
+; path/to/create[content] = Whatever text, setting filter below.
 
-wireframe[path] = home
-wireframe[title] = This is the homepage mockup
-wireframe[content] = This is the body of a node.
+; Notes
+; * Comments should be added on their own lines.
+; * Currently, menu cache has to be cleared manually when visiting pages anonymously.
+; * Currently, you have to refresh the page twice to pick up changes.
+
+; Example
+example/path[title]   = This is a awesome mockup
+example/path[content] = <p>This is a really interesting wireframe with an embedded image:</p><div style="text-align:center"><img src="http://icanhascheezburger.files.wordpress.com/2007/01/i-can-has-cheezburger.jpg" /></div>

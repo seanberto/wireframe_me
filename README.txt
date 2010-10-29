@@ -1,17 +1,26 @@
-NOTE: This module is nothing yet - in fact, it doesn't work.
+// Wireframe Me - A simple developer module for stubbing out wireframed pages in Drupal.
+// Developed by Sean Larkin, ThinkShout.com
 
-But per a designer's suggestion, I've started building a module that will let Drupal front-end UI designers quickly pencil out "clickable" Drupal wireframes.
+== About Wireframe Me ==
 
-The idea is really simple. The module comes with a simple configuration file in which a designer can list all the wireframed pages they need with the following format:
+Front-end designers, project managers, and clients consistently ask Drupal back-end engineers for clickable wireframes early in the development cycle. When developing "agilely", this is particularly important. Unfortunately, it's not always easy to manage placeholder page content in Drupal. Often it's done by creating placeholder nodes, but that requires either maintaining database dumps containing these nodes, or creating them on the fly with install scripts.
 
-wireframe[path] = the URL you want to hang the wireframe on
-wireframe[title] = The page title
-wireframe[content] = whatever markup you want on the page .
+Wireframe Me attempts to address this issue in a light-weight and codified manner by providing a simple configuration file, similar to a .info file, for creating/managing placeholder URL paths, page titles, and page body content.
 
-Three awesome points to this:
+Interestingly, this module leverages Drupal 7's new hook_module_implements_alter function such that the paths/pages created by this module are overridden quietly when another module, node, or view creates a path with the same URL.
 
-* You can hang blocks on these paths using contexts and boxes - and that work is permanent. In other words, you might kill the wireframed page, but if the path still exists, any context you've created for the path live on.
+Also, since really any value can be returned for the page body, you can simply embed images of mocked-up content/functionality that you've yet to implement. You can also "get started" hanging blocks on these stubbed out pages by combining this approach with the Context, Boxes, and Views modules.
 
-* I'm going to set the "weight" of this module really low, which means that if once module (or you) creates a page callback with the same URL, the wireframe goes away gracefully.
+== Installation/Usage ==
 
-* Since you can put whatever you want in the body of the page callback, you could really easily embed a Flickr wireframe.
+* Download and enable the module.
+* Add stubbed out pages in ./wireframes/wireframe_me.wireframes.inc.
+* Optionally, use Context, boxes and views to add permanent content to these paths.
+
+* NOTE: B/c of the way that we're currently flushing the menu cache, you must manually flush the menu cache to see changes to the wireframed pages as an anonymous site visitor. When logged in, you have to reload the page twice to pick up changes. We're working to fix ths.
+
+== ToDo ==
+
+* Find and parse *.wireframes.inc files created/maintained in other modules.
+* Check filter format of stubbed out pages for security.
+* Rework flushing of menu cache.
